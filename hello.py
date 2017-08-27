@@ -1,7 +1,7 @@
 import os
 import json
 from flask import Flask,render_template,redirect,session,url_for,flash
-from flask_script import Manager
+from flask_script import Manager,Shell
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
@@ -27,6 +27,11 @@ manager = Manager(app)
 #flask-bootstrap 적용
 bootstrap = Bootstrap(app)
 
+# shell에 db import 자동 반영
+def make_shell_context():
+    return dict(app=app,db=db,User=User,Role=Role)
+
+manager.add_command("shell",Shell(make_context=make_shell_context))
 
 # model 정의
 class Role(db.Model):
