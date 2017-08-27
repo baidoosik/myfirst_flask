@@ -1,4 +1,5 @@
 {% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Flask{% endblock %}
 
@@ -31,6 +32,8 @@
 <div class="container">
     <div class="page-header">
         <h1> welcome to flask world</h1>
+        <h2>{% if name %}{{ name }}{% else %}stranger{% endif %}</h2>
+        {{ wtf.quick_form(form) }}
     </div>
 </div>
 {% endblock %}
