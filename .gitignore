@@ -8,4 +8,5 @@ myvenv
 */static/
 /db.sqlite3
 .idea
+mail.py
 

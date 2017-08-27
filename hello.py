@@ -5,8 +5,12 @@ from flask_script import Manager,Shell
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate,MigrateCommand
 from wtforms import StringField,SubmitField
 from wtforms.validators import Email,Required
+from mail import Mail
+from crawling import naver_crawling
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -27,6 +31,9 @@ manager = Manager(app)
 #flask-bootstrap 적용
 bootstrap = Bootstrap(app)
 
+# MIGRATE 앱, 디비 연결
+migrate = Migrate(app,db)
+manager.add_command('db',MigrateCommand)
 # shell에 db import 자동 반영
 def make_shell_context():
     return dict(app=app,db=db,User=User,Role=Role)
@@ -75,8 +82,14 @@ def index():
         else:
             session['known']=True
 
+        flash('메일로 크롤링 정보를 보내드렸습니다.')
+        mail = Mail(naver_crawling(), form.email.data)
+        mail.ready_to_send_mail()
+        mail.naver_send_email()
+
         session['name']= form.name.data
         session['email'] = form.email.data
+
         form.name.data=''
         form.email.data=''
 
@@ -84,10 +97,12 @@ def index():
 
     return render_template('index.html',form=form,name=session['name'],
                            known=session.get('known',False))
-@app.route('/profile/')
-def profile():
-    #user_id =profile_id
-    return render_template('profile.html')
+
+@app.route('/profile/<int:id>/')
+def profile(id):
+    user = User.query.get_or_404(id)
+    return render_template('profile.html',user=user)
+
 
 #404, 500 page
 
