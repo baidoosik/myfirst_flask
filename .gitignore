@@ -1,7 +1,7 @@
 *.pyc
 __pycache__
 myvenv
-*.sqlite3
+*.sqlite
 .DS_Store
 *.json
 *.pickle
