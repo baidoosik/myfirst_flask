@@ -1,5 +1,6 @@
 import os
 import json
+import threading
 from flask import Flask,render_template,redirect,session,url_for,flash
 from flask_script import Manager,Shell
 from flask_bootstrap import Bootstrap
@@ -84,8 +85,8 @@ def index():
 
         flash('메일로 크롤링 정보를 보내드렸습니다.')
         mail = Mail(naver_crawling(), form.email.data)
-        mail.ready_to_send_mail()
-        mail.naver_send_email()
+        t=threading.Thread(target=mail.naver_send_email)
+        t.start()
 
         session['name']= form.name.data
         session['email'] = form.email.data
