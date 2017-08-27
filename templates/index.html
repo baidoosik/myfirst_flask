@@ -31,6 +31,12 @@
 {% block content %}
 <div class="container">
     <div class="page-header">
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&time;</button>
+            {{ message }}
+        </div>
+        {% endfor %}
         <h1> welcome to flask world</h1>
         <h2>{% if name %}{{ name }}{% else %}stranger{% endif %}</h2>
         {{ wtf.quick_form(form) }}

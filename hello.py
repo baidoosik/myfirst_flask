@@ -1,5 +1,5 @@
 import json
-from flask import Flask,render_template,redirect,session,url_for
+from flask import Flask,render_template,redirect,session,url_for,flash
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
@@ -27,8 +27,13 @@ def index():
     form =NameForm()
 
     if form.validate_on_submit():
+        old_name = session['name']
+
+        if old_name is not None and old_name !=form.name.data:
+            flash('사용자가 변경되었습니다.')
         session['name']= form.name.data
         session['email'] = form.email.data
+
         return redirect(url_for('index')) #post/rediret/get patter 기법. 마지막 요청을 post로 남기지 않기 위해.
 
     return render_template('index.html',form=form,name=session['name'])
